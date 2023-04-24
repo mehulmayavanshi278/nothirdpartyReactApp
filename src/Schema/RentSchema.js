@@ -1,0 +1,83 @@
+const mongoose = require("mongoose");
+const moment = require("moment");
+
+const rentSchema = new mongoose.Schema({
+    name:{
+        type:String,
+        required:true,
+    },
+    mobile:{
+        type:String,
+        required:true
+    },
+    whatsApp:{
+        type:String,
+        required:true
+    },
+    area:{
+        type:String,
+        required:true
+    },
+    homeType:{
+        type:String,
+        required:true
+    },
+    carParking:{
+        type:String,
+    },
+    totalBedRooms:{
+        type:String,
+        required:true
+    },
+    totalBath:{
+        type:String,
+        required:true
+    },
+    bhk:{
+        type:String,
+        required:true
+    },
+    furnishing:{
+        type:String,
+        required:true
+    },
+    totalFloors:{
+        type:String,
+    },
+    bachlorsAllowed:{
+        type:String,
+        required:true
+    },
+    soceityName:{
+        type:String,
+        required:true
+    },
+    Rent:{
+        type:String,
+        required:true
+    },
+    location:{
+        type:String,
+    },
+    homeImages:[
+        {
+            img:{
+                type:String,
+            }
+        }
+    ],
+    address:{
+        type:String,
+        required:true
+    },
+    desc:{
+        type:String,
+    },
+    postedTime:{
+        type:String,
+        default:moment().format('D-MM-YYYY')
+    }
+})
+
+const rentHouse = new mongoose.model("rentHouse", rentSchema);
+module.exports = rentHouse;

@@ -1,5 +1,4 @@
 const express = require("express");
-require("dotenv").config();
 const app = express();
 const router = require("./src/Routes/router");
 const moment = require("moment");
@@ -8,6 +7,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
 require("./src/DB/Conn");
+require("dotenv").config();
 
 // console.log(__dirname);
 

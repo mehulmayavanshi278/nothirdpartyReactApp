@@ -44,6 +44,7 @@ const register = async(req,res)=>{
    
 }
 const login = async(req,res)=>{
+  try{
     const {email , password} = req.body;
     console.log("login" + email , password);
     const registeredUser = await users.findOne({email});
@@ -64,6 +65,10 @@ const login = async(req,res)=>{
     }else{
         res.status(201).send({message:"invalid login details"});
     }
+  }catch(err){
+    console.log(err);
+  }
+
 }
 const logout = async(req,res)=>{
   try{

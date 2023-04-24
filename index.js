@@ -14,7 +14,9 @@ require("dotenv").config();
 app.use(express.static(path.join(__dirname,"/images")));
 console.log(path.join(__dirname,"/images"));
 app.use(cors({
-  origin:"http://localhost:3000"
+  // origin:"http://localhost:3000"
+   origin:"https://no-third-party.web.app"
+  
 }));
 app.use(bodyParser.json())
 app.use( bodyParser.urlencoded({extended: true }));

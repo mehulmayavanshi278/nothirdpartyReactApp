@@ -67,16 +67,18 @@ const homepage=async(req,res)=>{
   }
 
   const getsingleservice=async(req,res)=>{
-     const param = req.params['serviceidandtype'];
-     console.log(param);
-     const serviceid = param.split(":")[0];
-     const servicetype = param.split(":")[1];
-     console.log(servicetype);
-     let servicetypeArray = ["rentnsell" ,"plumbers", "electritions" , "stationaries" , "gyms" , "medicines" , "carpenters"];
-    let servicesArray = [rentHouse , plumbers , electritions , stationaries , gyms ,  medicines , carpenters];
-    const indexofservice = servicetypeArray.indexOf(servicetype);  // this array method gives n an index of an servicetype useful for dynamic findone method
-    console.log(indexofservice);
+ 
+
     try{
+      const param = req.params['serviceidandtype'];
+      console.log(param);
+      const serviceid = param.split(":")[0];
+      const servicetype = param.split(":")[1];
+      console.log(servicetype);
+      let servicetypeArray = ["rentnsell" ,"plumbers", "electritions" , "stationaries" , "gyms" , "medicines" , "carpenters"];
+     let servicesArray = [rentHouse , plumbers , electritions , stationaries , gyms ,  medicines , carpenters];
+     const indexofservice = servicetypeArray.indexOf(servicetype);  // this array method gives n an index of an servicetype useful for dynamic findone method
+     console.log(indexofservice);
       const service = await servicesArray[indexofservice].findOne({_id:serviceid});
     if(service){
       return res.status(200).send({data:service , message:servicetype});

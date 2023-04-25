@@ -60,9 +60,9 @@ const saveservice = async(req,res)=>{
        let serviceid = req.params['serviceid'].split(":")[0];
        let servicetype = req.params['serviceid'].split(":")[1];
        const token = req.headers.authtoken;
-       if(token){
+       if(!token){
         console.log("yess");
-        return 
+         return res.status(201).send({message:"user not login"});
        }else{
 
        }

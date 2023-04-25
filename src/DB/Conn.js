@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const Database = process.env.DB;
-console.log(Database);
-mongoose.connect(Database).then(()=>{
+mongoose.connect(process.env.DB).then(()=>{
     console.log("connetcted to Database")
 }).catch((err)=>{
     console.log(err);

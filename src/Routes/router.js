@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
+
 const multer  = require('multer');
 const users = require("../Schema/UserSchema");
 const {register , login , logout , addtoselleraccount , addrentandsell , addplumelec , addserviceto } = require("../controllers/controllers");
 const {homepage , getprofileinfo , getsingleservice , allhomeservices , allplumnelec , allsgmcservices}  = require("../controllers/getcontrollers");
 const {unsaveservice , deleteservice}  = require("../controllers/deletecontrollers");
 const {saveservice , addratings , addreviews} = require("../controllers/pulcontrollers");
+
 
 
 
@@ -45,9 +47,12 @@ router.post("/register",register)
 router.post("/login" , login)
 router.get("/logout",logout)
 router.post("/addtoselleraccount",addtoselleraccount)
-router.post("/addrentandsell", upload.array('uploaded_file',10) , addrentandsell)
-router.post("/addplumelec", upload.single('uploaded_file') ,addplumelec)
-router.post("/addservice/:servicename" , upload.array('uploaded_file' , 10) , addserviceto)
+// router.post("/addrentandsell", upload.array('uploaded_file',10) , addrentandsell)
+router.post("/addrentandsell" , addrentandsell)
+// router.post("/addplumelec", upload.single('uploaded_file') ,addplumelec)
+router.post("/addplumelec" ,addplumelec)
+// router.post("/addservice/:servicename" , upload.array('uploaded_file' , 10) , addserviceto)
+router.post("/addservice/:servicename" , addserviceto)
 
 router.put("/addratings/:serviceid", addratings)
 router.put("/addreviews/:serviceid", addreviews)

@@ -1,3 +1,4 @@
+const cloudinary = require('cloudinary').v2;
 const users = require("../Schema/UserSchema");
 const rentHouse = require("../Schema/RentSchema")
 const plumbers = require("../Schema/plumSchema")
@@ -16,6 +17,7 @@ const stathomes = require("../homeserviceSchema/StatHomeschema");
 const gymhomes = require("../homeserviceSchema/GymHomeSchema")
 const Medhomes = require("../homeserviceSchema/MedicineHomeSchema");
 const carphomes = require("../homeserviceSchema/CarpHomeSchema");
+const { relativeTimeRounding } = require('moment');
 
 const register = async(req,res)=>{
     try{
@@ -128,7 +130,13 @@ const addtoselleraccount = async(req,res)=>{
         //  for(let i=0;i<req.files.length;i++){
         //     console.log(i);
         //  }
-      
+        const uploadFiles = req.files.uploaded_file.map((elm)=>{
+          return cloudinary.uploader.upload(elm.tempFilePath);
+        });
+        const result = await Promise.all(uploadFiles);
+        console.log(result);
+        let img = []
+
        const verifyUser = await jwt.verify(token , process.env.SECREAT_KEY);
     //    console.log(verifyUser)
        const loginUser = await users.findOne({_id:verifyUser.id});
@@ -136,19 +144,25 @@ const addtoselleraccount = async(req,res)=>{
        let {name , mobile , whatsApp  } = loginUser
        const { area, homeType, carParking, totalBedRooms , totalBath, bhk, furnishing, totalFloors, bachlorsAllowed, soceityName, Rent, location, address, desc} = req.body
     //    console.log( area, homeType, carParking, totalBedRooms, totalBath, bhk, furnishing, totalFloors, bachlorsAllowed, soceityName, Rent, location, address)
-    //    let images = [];
-    //    for(let i=0;i<req.files.lenth;i++){
-    //      img.push(req.files[i].originalname)
-    //    }
+       let images = [];
+       let newimg 
+       for(let i=0;i<result.length;i++){
+        newimg ={
+          img:result[i].url
+        }
+        images.push(newimg)
+       }
+       console.log("images :" , images)
     //    console.log(images);
        let newRent = new rentHouse({name , mobile , whatsApp , area , homeType , carParking ,  totalBedRooms, totalBath, bhk, furnishing, totalFloors, bachlorsAllowed, soceityName, Rent, location, address , desc});
-         for(let i=0;i<req.files.length;i++){
-        console.log(req.files[i].originalname);
-        newRent.homeImages=  newRent.homeImages.concat({img:req.files[i].originalname})
+         for(let i=0;i<images.length;i++){
+          console.log(i);
+        newRent.homeImages=  newRent.homeImages.concat({img :images[i].img});
        }
-    console.log(req.files.length);
+  
        await newRent.save();
-       loginUser.addedServices =  loginUser.addedServices.concat({name , img:req.files[0].originalname, role:"rentnsell" , serviesId:newRent._id}); //adding the service to the addedservice in users account
+       console.log(newRent);
+       loginUser.addedServices =  loginUser.addedServices.concat({name , img:images[0].img ,  role:"rentnsell" , serviesId:newRent._id}); //adding the service to the addedservice in users account
        await loginUser.save();
        let newhomerent = await new homerent({serviceId:newRent._id , Rent:newRent.Rent,  area:newRent.area , postedTime:newRent.postedTime , img:newRent.homeImages[0].img , desc:newRent.desc})   //adding the service to the homerent schema which will be shown to the home page of client
        await newhomerent.save();
@@ -164,15 +178,23 @@ const addtoselleraccount = async(req,res)=>{
 
 //    the function which add the plumber and electrition
    const addplumelec=async(req,res)=>{
+    
+
+
       try{
         const {area , role , exp , bio , timing} = req.body;
         const token = req.headers.authtoken;
+        console.log("i am in try  block");
+        const file = req.files.uploaded_file;
+        // console.log(file);
         let img
-        if(req.file){
-        img = req.file.originalname
-        }else{
-            img=""
-        }
+         await cloudinary.uploader.upload(file.tempFilePath,(err,result)=>{
+           img=result.url
+           console.log(result);
+        })
+  
+         console.log(img);
+
         // console.log(req.file);
         // console.log(area , role , exp , bio , timing);
         const verifyUser = await jwt.verify(token , process.env.SECREAT_KEY);
@@ -217,10 +239,15 @@ const addtoselleraccount = async(req,res)=>{
         const token = req.headers.authtoken;
         const { area,openTime,closeTime,openDays,storeName,address,location} = req.body;
         let imgpath=[]
-        for(let i=0;i<req.files.length;i++){
-          imgpath.push(req.files[i].originalname);
+
+        const uploadFiles = req.files.uploaded_file.map((elm)=>{
+          return cloudinary.uploader.upload(elm.tempFilePath);
+        });
+        const result = await Promise.all(uploadFiles);
+        console.log(result);
+        for(let i=0;i<result.length;i++){
+          imgpath.push(result[i].url)
         }
-  
         const verifyUser = await jwt.verify(token,process.env.SECREAT_KEY);
         let loginUser = await users.findOne({_id:verifyUser.id});
         const {name , age , zender , mobile , whatsApp } = loginUser
@@ -231,7 +258,7 @@ const addtoselleraccount = async(req,res)=>{
             console.log("gyms");
             let newgym = new gyms({name , mobile , whatsApp , age , zender , area,openTime,closeTime,openDays,storeName,address,location });
             for(let i=0;i<imgpath.length;i++){
-                newgym.Images=newgym.Images.concat({img : imgpath[i]});
+                newgym.Images=newgym.Images.concat({img : imgpath[i].url});
             }
              await newgym.save();
              loginUser.addedServices = loginUser.addedServices.concat({name:loginUser.name ,serviesId:newgym._id , role:service , img:imgpath[0]  });
